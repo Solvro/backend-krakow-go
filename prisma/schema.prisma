@@ -112,6 +112,7 @@ enum EventTopic {
   HEALTH
   EDUCATION
   COMMUNITY
+  TECH
   OTHER
 }
 
