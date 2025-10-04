@@ -35,6 +35,9 @@ export class ResponseEventDto {
   @ApiProperty({ description: "Event latitude" })
   latitude: number;
 
+  @ApiProperty({ description: "Event place name" })
+  placeName: string;
+
   @ApiProperty({ description: "Related organization identifier" })
   organizationId: string;
 

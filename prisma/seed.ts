@@ -78,6 +78,7 @@ async function main() {
       endDate: new Date("2025-10-10T11:00:00.000Z"),
       longitude: 19.941,
       latitude: 50.064,
+      placeName: "Centrum Kongresowe",
       organizationId: orgHackyeah.id,
     },
     {
@@ -89,6 +90,7 @@ async function main() {
       endDate: new Date("2025-10-12T20:00:00.000Z"),
       longitude: 19.942,
       latitude: 50.065,
+      placeName: "Hala EXPO",
       organizationId: orgHackyeah.id,
     },
     {
@@ -100,6 +102,7 @@ async function main() {
       endDate: new Date("2025-09-20T13:00:00.000Z"),
       longitude: 19.9415,
       latitude: 50.0648,
+      placeName: "Planty Krakowskie",
       organizationId: orgEco.id,
     },
     {
@@ -111,6 +114,7 @@ async function main() {
       endDate: new Date("2025-09-27T12:00:00.000Z"),
       longitude: 19.937,
       latitude: 50.059,
+      placeName: "Bulwar Floriański",
       organizationId: orgEco.id,
     },
     {
@@ -122,6 +126,7 @@ async function main() {
       endDate: new Date("2025-11-05T15:00:00.000Z"),
       longitude: 19.934,
       latitude: 50.061,
+      placeName: "Magazyn Caritas",
       organizationId: orgKraz.id,
     },
     {
@@ -133,6 +138,7 @@ async function main() {
       endDate: new Date("2025-10-05T13:00:00.000Z"),
       longitude: 19.95,
       latitude: 50.062,
+      placeName: "Miejski Dom Kultury",
       organizationId: orgCity.id,
     },
     {
@@ -144,6 +150,7 @@ async function main() {
       endDate: new Date("2025-10-19T16:00:00.000Z"),
       longitude: 19.944,
       latitude: 50.064,
+      placeName: "Centrum Młodzieżowe",
       organizationId: orgHackyeah.id,
     },
     {
@@ -155,6 +162,7 @@ async function main() {
       endDate: new Date("2025-09-30T14:00:00.000Z"),
       longitude: 19.939,
       latitude: 50.063,
+      placeName: "FabLab Kraków",
       organizationId: orgKraz.id,
     },
     {
@@ -166,6 +174,7 @@ async function main() {
       endDate: new Date("2025-10-25T21:00:00.000Z"),
       longitude: 19.9347,
       latitude: 50.0635,
+      placeName: "Mały Rynek",
       organizationId: orgKraz.id,
     },
     {
@@ -177,6 +186,7 @@ async function main() {
       endDate: new Date("2025-10-12T21:00:00.000Z"),
       longitude: 19.945,
       latitude: 50.066,
+      placeName: "Hub Innowacji",
       organizationId: orgHackyeah.id,
     },
   ];
@@ -192,6 +202,7 @@ async function main() {
         title: event.title,
         topic: event.topic,
         description: event.description,
+        placeName: event.placeName,
       },
       create: {
         id: event.id,
@@ -202,6 +213,7 @@ async function main() {
         endDate: event.endDate,
         longitude: event.longitude,
         latitude: event.latitude,
+        placeName: event.placeName,
         organizationId: event.organizationId,
       },
     });

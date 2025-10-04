@@ -9,6 +9,7 @@ export class EventEntity {
   endDate: Date;
   longitude: number;
   latitude: number;
+  placeName: string;
   organizationId: string;
   createdAt: Date;
   updatedAt: Date;
