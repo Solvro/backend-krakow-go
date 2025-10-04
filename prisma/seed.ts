@@ -310,8 +310,8 @@ async function main() {
   const volunteersData = [
     {
       id: "vol-ania",
-      name: "Agnieszka Bielecka",
-      email: "agnieszka.b@example.com",
+      name: "Ania Bielecka",
+      email: "ania.b@example.com",
       birthdate: "2004-03-12",
       schoolId: school1.id,
     },
@@ -391,15 +391,36 @@ async function main() {
     volunteers[v.id] = created;
   }
 
-  // Submissions - różne statusy dla demo
-  const submissionsData = [
+  const aniaSubmissionSeeds = [
     {
       id: "sub-1",
       vol: "vol-ania",
       event: "event-park-planty-tree",
-      // make approved so vol-ania receives a second certificate for this event (1 point)
+      // Completed participation -> certificate already granted below (tasks done)
+      status: SubmissionStatus.COMPLETED,
+    },
+    {
+      id: "sub-9",
+      vol: "vol-ania",
+      event: "event-recycling-workshop",
+      status: SubmissionStatus.PENDING,
+    },
+    {
+      id: "sub-11",
+      vol: "vol-ania",
+      event: "event-hackyeah-orientation",
       status: SubmissionStatus.APPROVED,
     },
+    {
+      id: "sub-12",
+      vol: "vol-ania",
+      event: "event-ai-for-good",
+      status: SubmissionStatus.REJECTED,
+    },
+  ];
+
+  // Submissions - różne statusy dla demo
+  const submissionsData = [
     {
       id: "sub-2",
       vol: "vol-kuba",
@@ -442,36 +463,7 @@ async function main() {
       event: "event-tech-meetup-krakow",
       status: SubmissionStatus.REJECTED,
     },
-
-    // Dodatkowe zgłoszenia dla vol-ania, razem 4 różne statusy (łącznie z sub-1)
-    {
-      id: "sub-9",
-      vol: "vol-ania",
-      event: "event-recycling-workshop",
-      status: SubmissionStatus.PENDING,
-    },
-    {
-      id: "sub-10",
-      vol: "vol-ania",
-      event: "event-tech-meetup-krakow",
-      // make not approved so only one approved submission exists for vol-ania
-      status: SubmissionStatus.PENDING,
-    },
-    {
-      id: "sub-11",
-      vol: "vol-ania",
-      event: "event-hackyeah-orientation",
-      status: SubmissionStatus.REJECTED,
-    },
-    // New approved submission for vol-ania on the AI event - this will be the single
-    // attendance certificate created for her and we'll ensure there are exactly 3
-    // tasks for this volunteer & event below.
-    {
-      id: "sub-12",
-      vol: "vol-ania",
-      event: "event-ai-for-good",
-      status: SubmissionStatus.APPROVED,
-    },
+    ...aniaSubmissionSeeds,
   ];
 
   for (const s of submissionsData) {
@@ -500,7 +492,7 @@ async function main() {
       description: "Rozdawanie sadzonek i narzędzi ochotnikom",
       startDate: new Date("2025-09-20T09:00:00.000Z"),
       endDate: new Date("2025-09-20T12:00:00.000Z"),
-      isCompleted: false,
+      isCompleted: true,
       eventId: events["event-park-planty-tree"].id,
       volunteerId: volunteers["vol-ania"].id,
     },
@@ -594,7 +586,7 @@ async function main() {
       endDate: new Date("2025-10-11T12:00:00.000Z"),
       isCompleted: false,
       eventId: events["event-hackyeah-orientation"].id,
-      volunteerId: volunteers["vol-ania"].id,
+      volunteerId: volunteers["vol-kuba"].id,
     },
     {
       id: "task-hack-sponsors",
@@ -604,7 +596,7 @@ async function main() {
       endDate: new Date("2025-10-12T21:00:00.000Z"),
       isCompleted: false,
       eventId: events["event-tech-meetup-krakow"].id,
-      volunteerId: volunteers["vol-ania"].id,
+      volunteerId: volunteers["vol-przemek"].id,
     },
     {
       id: "task-hack-sound",
@@ -771,13 +763,18 @@ async function main() {
   }
 
   // Attendance certificates and points for approved participations
-  const approvedSubmissions = submissionsData.filter(
-    (submission) => submission.status === SubmissionStatus.APPROVED,
+  const rewardableStatuses = new Set<SubmissionStatus>([
+    SubmissionStatus.APPROVED,
+    SubmissionStatus.COMPLETED,
+  ]);
+
+  const rewardableSubmissions = submissionsData.filter((submission) =>
+    rewardableStatuses.has(submission.status),
   );
 
   const volunteerPoints: Record<string, number> = {};
 
-  for (const submissionSeed of approvedSubmissions) {
+  for (const submissionSeed of rewardableSubmissions) {
     const volunteerId = volunteers[submissionSeed.vol].id;
     const eventId = events[submissionSeed.event].id;
 

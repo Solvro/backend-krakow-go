@@ -11,6 +11,15 @@ import { UpdateSubmissionDto } from "./dto/update-submission.dto";
 export class SubmissionService {
   constructor(private prisma: PrismaService) {}
 
+  private static isRewardEligible(
+    status: SubmissionStatus | null | undefined,
+  ): boolean {
+    return (
+      status === SubmissionStatus.APPROVED ||
+      status === SubmissionStatus.COMPLETED
+    );
+  }
+
   async create(
     createSubmissionDto: CreateSubmissionDto,
   ): Promise<ResponseSubmissionDto> {
@@ -19,7 +28,7 @@ export class SubmissionService {
         data: createSubmissionDto,
       });
 
-      if (submission.status === SubmissionStatus.APPROVED) {
+      if (SubmissionService.isRewardEligible(submission.status)) {
         await this.grantParticipationRewards(tx, submission);
       }
 
@@ -49,10 +58,14 @@ export class SubmissionService {
         data: updateSubmissionDto,
       });
 
-      if (
-        existingSubmission?.status !== SubmissionStatus.APPROVED &&
-        updatedSubmission.status === SubmissionStatus.APPROVED
-      ) {
+      const wasEligible = SubmissionService.isRewardEligible(
+        existingSubmission?.status,
+      );
+      const isEligible = SubmissionService.isRewardEligible(
+        updatedSubmission.status,
+      );
+
+      if (!wasEligible && isEligible) {
         await this.grantParticipationRewards(tx, updatedSubmission);
       }
 

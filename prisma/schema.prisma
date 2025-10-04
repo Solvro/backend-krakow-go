@@ -136,6 +136,7 @@ enum SubmissionStatus {
   PENDING
   APPROVED
   REJECTED
+  COMPLETED
 }
 
 model Chat {
