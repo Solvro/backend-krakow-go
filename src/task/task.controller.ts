@@ -7,9 +7,15 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { CreateTaskDto } from "./dto/create-task.dto";
+import { ResponseTaskDto } from "./dto/response-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TaskService } from "./task.service";
 
@@ -20,35 +26,39 @@ export class TaskController {
 
   @Post()
   @ApiOperation({ summary: "Create task" })
-  @ApiOkResponse({ description: "Created task" })
+  @ApiCreatedResponse({ description: "Created task", type: ResponseTaskDto })
   async create(@Body() createTaskDto: CreateTaskDto) {
     return this.taskService.create(createTaskDto);
   }
 
   @Get()
   @ApiOperation({ summary: "List tasks" })
-  @ApiOkResponse({ description: "Array of tasks" })
+  @ApiOkResponse({
+    description: "Array of tasks",
+    type: ResponseTaskDto,
+    isArray: true,
+  })
   async findAll() {
     return this.taskService.findAll();
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get task by id" })
-  @ApiOkResponse({ description: "Task" })
+  @ApiOkResponse({ description: "Task", type: ResponseTaskDto })
   async findOne(@Param("id") id: string) {
     return this.taskService.findOne(id);
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update task" })
-  @ApiOkResponse({ description: "Updated task" })
+  @ApiOkResponse({ description: "Updated task", type: ResponseTaskDto })
   async update(@Param("id") id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.taskService.update(id, updateTaskDto);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete task" })
-  @ApiOkResponse({ description: "Deletion result" })
+  @ApiOkResponse({ description: "Deleted task", type: ResponseTaskDto })
   async remove(@Param("id") id: string) {
     return this.taskService.remove(id);
   }

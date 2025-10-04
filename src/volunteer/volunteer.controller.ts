@@ -7,9 +7,15 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { CreateVolunteerDto } from "./dto/create-volunteer.dto";
+import { ResponseVolunteerDto } from "./dto/response-volunteer.dto";
 import { UpdateVolunteerDto } from "./dto/update-volunteer.dto";
 import { VolunteerService } from "./volunteer.service";
 
@@ -20,28 +26,38 @@ export class VolunteerController {
 
   @Post()
   @ApiOperation({ summary: "Create volunteer" })
-  @ApiOkResponse({ description: "Created volunteer" })
+  @ApiCreatedResponse({
+    description: "Created volunteer",
+    type: ResponseVolunteerDto,
+  })
   async create(@Body() createVolunteerDto: CreateVolunteerDto) {
     return this.volunteerService.create(createVolunteerDto);
   }
 
   @Get()
   @ApiOperation({ summary: "List volunteers" })
-  @ApiOkResponse({ description: "Array of volunteers" })
+  @ApiOkResponse({
+    description: "Array of volunteers",
+    type: ResponseVolunteerDto,
+    isArray: true,
+  })
   async findAll() {
     return this.volunteerService.findAll();
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get volunteer by id" })
-  @ApiOkResponse({ description: "Volunteer" })
+  @ApiOkResponse({ description: "Volunteer", type: ResponseVolunteerDto })
   async findOne(@Param("id") id: string) {
     return this.volunteerService.findOne(id);
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update volunteer" })
-  @ApiOkResponse({ description: "Updated volunteer" })
+  @ApiOkResponse({
+    description: "Updated volunteer",
+    type: ResponseVolunteerDto,
+  })
   async update(
     @Param("id") id: string,
     @Body() updateVolunteerDto: UpdateVolunteerDto,
@@ -51,7 +67,10 @@ export class VolunteerController {
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete volunteer" })
-  @ApiOkResponse({ description: "Deletion result" })
+  @ApiOkResponse({
+    description: "Deleted volunteer",
+    type: ResponseVolunteerDto,
+  })
   async remove(@Param("id") id: string) {
     return this.volunteerService.remove(id);
   }

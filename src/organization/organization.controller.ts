@@ -7,9 +7,15 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { CreateOrganizationDto } from "./dto/create-organization.dto";
+import { ResponseOrganizationDto } from "./dto/response-organization.dto";
 import { UpdateOrganizationDto } from "./dto/update-organization.dto";
 import { OrganizationService } from "./organization.service";
 
@@ -20,28 +26,41 @@ export class OrganizationController {
 
   @Post()
   @ApiOperation({ summary: "Create organization" })
-  @ApiOkResponse({ description: "Created organization" })
+  @ApiCreatedResponse({
+    description: "Created organization",
+    type: ResponseOrganizationDto,
+  })
   async create(@Body() createOrganizationDto: CreateOrganizationDto) {
     return this.organizationService.create(createOrganizationDto);
   }
 
   @Get()
   @ApiOperation({ summary: "List organizations" })
-  @ApiOkResponse({ description: "Array of organizations" })
+  @ApiOkResponse({
+    description: "Array of organizations",
+    type: ResponseOrganizationDto,
+    isArray: true,
+  })
   async findAll() {
     return this.organizationService.findAll();
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get organization by id" })
-  @ApiOkResponse({ description: "Organization" })
+  @ApiOkResponse({
+    description: "Organization",
+    type: ResponseOrganizationDto,
+  })
   async findOne(@Param("id") id: string) {
     return this.organizationService.findOne(id);
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update organization" })
-  @ApiOkResponse({ description: "Updated organization" })
+  @ApiOkResponse({
+    description: "Updated organization",
+    type: ResponseOrganizationDto,
+  })
   async update(
     @Param("id") id: string,
     @Body() updateOrganizationDto: UpdateOrganizationDto,
@@ -51,7 +70,10 @@ export class OrganizationController {
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete organization" })
-  @ApiOkResponse({ description: "Deletion result" })
+  @ApiOkResponse({
+    description: "Deleted organization",
+    type: ResponseOrganizationDto,
+  })
   async remove(@Param("id") id: string) {
     return this.organizationService.remove(id);
   }

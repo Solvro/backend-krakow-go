@@ -7,10 +7,16 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { CoordinatorService } from "./coordinator.service";
 import { CreateCoordinatorDto } from "./dto/create-coordinator.dto";
+import { ResponseCoordinatorDto } from "./dto/response-coordinator.dto";
 import { UpdateCoordinatorDto } from "./dto/update-coordinator.dto";
 
 @ApiTags("Coordinator")
@@ -20,28 +26,38 @@ export class CoordinatorController {
 
   @Post()
   @ApiOperation({ summary: "Create coordinator" })
-  @ApiOkResponse({ description: "Created coordinator" })
+  @ApiCreatedResponse({
+    description: "Created coordinator",
+    type: ResponseCoordinatorDto,
+  })
   async create(@Body() createCoordinatorDto: CreateCoordinatorDto) {
     return this.coordinatorService.create(createCoordinatorDto);
   }
 
   @Get()
   @ApiOperation({ summary: "List coordinators" })
-  @ApiOkResponse({ description: "Array of coordinators" })
+  @ApiOkResponse({
+    description: "Array of coordinators",
+    type: ResponseCoordinatorDto,
+    isArray: true,
+  })
   async findAll() {
     return this.coordinatorService.findAll();
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get coordinator by id" })
-  @ApiOkResponse({ description: "Coordinator" })
+  @ApiOkResponse({ description: "Coordinator", type: ResponseCoordinatorDto })
   async findOne(@Param("id") id: string) {
     return this.coordinatorService.findOne(id);
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update coordinator" })
-  @ApiOkResponse({ description: "Updated coordinator" })
+  @ApiOkResponse({
+    description: "Updated coordinator",
+    type: ResponseCoordinatorDto,
+  })
   async update(
     @Param("id") id: string,
     @Body() updateCoordinatorDto: UpdateCoordinatorDto,
@@ -51,7 +67,10 @@ export class CoordinatorController {
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete coordinator" })
-  @ApiOkResponse({ description: "Deletion result" })
+  @ApiOkResponse({
+    description: "Deleted coordinator",
+    type: ResponseCoordinatorDto,
+  })
   async remove(@Param("id") id: string) {
     return this.coordinatorService.remove(id);
   }

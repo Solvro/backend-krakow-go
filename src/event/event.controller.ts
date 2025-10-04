@@ -7,9 +7,15 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { CreateEventDto } from "./dto/create-event.dto";
+import { ResponseEventDto } from "./dto/response-event.dto";
 import { UpdateEventDto } from "./dto/update-event.dto";
 import { EventService } from "./event.service";
 
@@ -20,28 +26,32 @@ export class EventController {
 
   @Post()
   @ApiOperation({ summary: "Create event" })
-  @ApiOkResponse({ description: "Created event" })
+  @ApiCreatedResponse({ description: "Created event", type: ResponseEventDto })
   async create(@Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto);
   }
 
   @Get()
   @ApiOperation({ summary: "List events" })
-  @ApiOkResponse({ description: "Array of events" })
+  @ApiOkResponse({
+    description: "Array of events",
+    type: ResponseEventDto,
+    isArray: true,
+  })
   async findAll() {
     return this.eventService.findAll();
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get event by id" })
-  @ApiOkResponse({ description: "Event" })
+  @ApiOkResponse({ description: "Event", type: ResponseEventDto })
   async findOne(@Param("id") id: string) {
     return this.eventService.findOne(id);
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update event" })
-  @ApiOkResponse({ description: "Updated event" })
+  @ApiOkResponse({ description: "Updated event", type: ResponseEventDto })
   async update(
     @Param("id") id: string,
     @Body() updateEventDto: UpdateEventDto,
@@ -51,7 +61,7 @@ export class EventController {
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete event" })
-  @ApiOkResponse({ description: "Deletion result" })
+  @ApiOkResponse({ description: "Deleted event", type: ResponseEventDto })
   async remove(@Param("id") id: string) {
     return this.eventService.remove(id);
   }
