@@ -11,6 +11,7 @@ async function main() {
   console.warn("Start seeding...");
 
   // Drop all data
+
   await prisma.chatMessage.deleteMany();
   await prisma.chatParticipant.deleteMany();
   await prisma.chat.deleteMany();
@@ -398,24 +399,32 @@ async function main() {
       event: "event-park-planty-tree",
       // Completed participation -> certificate already granted below (tasks done)
       status: SubmissionStatus.COMPLETED,
+      description:
+        "Chcę pomóc zazieleniać Planty i spędzić sobotę robiąc coś pożytecznego.",
     },
     {
       id: "sub-9",
       vol: "vol-ania",
       event: "event-recycling-workshop",
       status: SubmissionStatus.PENDING,
+      description:
+        "Lubię naprawiać rzeczy i chcę pokazać, że recykling może być kreatywny.",
     },
     {
       id: "sub-11",
       vol: "vol-ania",
       event: "event-hackyeah-orientation",
       status: SubmissionStatus.APPROVED,
+      description:
+        "Chcę poznać organizatorów HackYeah i od razu zaoferować swoją pomoc.",
     },
     {
       id: "sub-12",
       vol: "vol-ania",
       event: "event-ai-for-good",
       status: SubmissionStatus.REJECTED,
+      description:
+        "Interesuję się AI i chcę sprawdzić, jak można wspierać NGO technologią.",
     },
   ];
 
@@ -426,42 +435,56 @@ async function main() {
       vol: "vol-kuba",
       event: "event-ai-for-good",
       status: SubmissionStatus.APPROVED,
+      description:
+        "Mam doświadczenie w DevOps i chcę pomagać zespołom z infrastrukturą.",
     },
     {
       id: "sub-3",
       vol: "vol-ola",
       event: "event-youth-coding",
       status: SubmissionStatus.PENDING,
+      description:
+        "Chcę uczyć młodszych programowania i dzielić się pasją do tworzenia.",
     },
     {
       id: "sub-4",
       vol: "vol-marek",
       event: "event-wisla-cleanup",
       status: SubmissionStatus.APPROVED,
+      description:
+        "Mieszkam przy Wiśle i zależy mi na czystych bulwarach dla wszystkich.",
     },
     {
       id: "sub-5",
       vol: "vol-ewa",
       event: "event-food-drive-krakow",
       status: SubmissionStatus.PENDING,
+      description:
+        "Lubię logistykę i chcę wesprzeć sortowanie paczek dla potrzebujących.",
     },
     {
       id: "sub-6",
       vol: "vol-tomek",
       event: "event-hackyeah-orientation",
       status: SubmissionStatus.APPROVED,
+      description:
+        "Mam zmysł organizacyjny i chcę dopilnować zaplecza wydarzenia HackYeah.",
     },
     {
       id: "sub-7",
       vol: "vol-paulina",
       event: "event-recycling-workshop",
       status: SubmissionStatus.PENDING,
+      description:
+        "Uwielbiam DIY i chcę inspirować innych do naprawiania sprzętów.",
     },
     {
       id: "sub-8",
       vol: "vol-przemek",
       event: "event-tech-meetup-krakow",
       status: SubmissionStatus.REJECTED,
+      description:
+        "Chcę poznać mentorów z branży i pomóc przy wydarzeniu technologicznym.",
     },
     ...aniaSubmissionSeeds,
   ];
@@ -474,12 +497,16 @@ async function main() {
           eventId: events[s.event].id,
         },
       },
-      update: { status: s.status },
+      update: {
+        status: s.status,
+        description: s.description,
+      },
       create: {
         id: s.id,
         volunteerId: volunteers[s.vol].id,
         eventId: events[s.event].id,
         status: s.status,
+        description: s.description,
       },
     });
   }

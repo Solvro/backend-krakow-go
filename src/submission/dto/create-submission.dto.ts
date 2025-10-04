@@ -9,6 +9,12 @@ export class CreateSubmissionDto {
   })
   status?: SubmissionStatus;
 
+  @ApiPropertyOptional({
+    description: "Volunteer motivation note",
+    example: "Chcę pomóc w sadzeniu drzew, bo kocham miejską zieleń.",
+  })
+  description?: string;
+
   @ApiProperty({ description: "Volunteer identifier" })
   volunteerId: string;
 

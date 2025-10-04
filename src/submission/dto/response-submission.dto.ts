@@ -1,6 +1,6 @@
 import { SubmissionStatus } from "@prisma/client";
 
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class ResponseSubmissionDto {
   @ApiProperty({ description: "Submission identifier" })
@@ -8,6 +8,12 @@ export class ResponseSubmissionDto {
 
   @ApiProperty({ description: "Submission status", enum: SubmissionStatus })
   status: SubmissionStatus;
+
+  @ApiPropertyOptional({
+    description: "Volunteer motivation note",
+    nullable: true,
+  })
+  description?: string | null;
 
   @ApiProperty({ description: "Volunteer identifier" })
   volunteerId: string;

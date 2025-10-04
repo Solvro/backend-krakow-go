@@ -78,6 +78,7 @@ model Volunteer {
 model Submission {
   id        String           @id @default(uuid())
   status    SubmissionStatus @default(PENDING)
+  description String?
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 
