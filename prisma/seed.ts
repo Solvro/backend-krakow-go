@@ -17,6 +17,7 @@ async function main() {
   await prisma.submission.deleteMany();
   await prisma.attendanceCertificate.deleteMany();
   await prisma.task.deleteMany();
+  await prisma.eventRecommendation.deleteMany();
   await prisma.volunteer.deleteMany();
   await prisma.coordinator.deleteMany();
   await prisma.school.deleteMany();
@@ -954,6 +955,21 @@ async function main() {
       content: "Jasne, będę od 9:00 do 14:00.",
     },
   });
+
+  const grantStatements = [
+    "grant all privileges on all tables in schema public to postgres, anon, authenticated, service_role",
+    "grant all privileges on all functions in schema public to postgres, anon, authenticated, service_role",
+    "grant all privileges on all sequences in schema public to postgres, anon, authenticated, service_role",
+    "alter default privileges in schema public grant all on tables to postgres, anon, authenticated, service_role",
+    "alter default privileges in schema public grant all on functions to postgres, anon, authenticated, service_role",
+    "alter default privileges in schema public grant all on sequences to postgres, anon, authenticated, service_role",
+    'grant usage on schema "public" to anon',
+    'grant usage on schema "public" to authenticated',
+  ];
+
+  for (const statement of grantStatements) {
+    await prisma.$executeRawUnsafe(`${statement};`);
+  }
 
   console.warn("Seeding finished.");
 }
