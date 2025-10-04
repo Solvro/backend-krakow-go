@@ -39,6 +39,8 @@ model Event {
 
   certificates AttendanceCertificate[]
 
+  recommendations EventRecommendation[]
+
   chat Chat?
 }
 
@@ -69,6 +71,8 @@ model Volunteer {
   tasks       Task[]
   chatParticipants ChatParticipant[]
   certificates AttendanceCertificate[]
+
+  recommendations EventRecommendation[]
 }
 
 model Submission {
@@ -112,6 +116,8 @@ model Coordinator {
 
   school   School? @relation(fields: [schoolId], references: [id])
   schoolId String?
+
+  recommendations EventRecommendation[]
 }
 
 enum EventTopic {
@@ -191,4 +197,22 @@ model AttendanceCertificate {
   eventId String
 
   @@unique([volunteerId, eventId])
+}
+
+model EventRecommendation {
+  id          String   @id @default(uuid())
+  message     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
+  coordinatorId String
+
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id])
+  volunteerId String
+
+  event   Event @relation(fields: [eventId], references: [id])
+  eventId String
+
+  @@unique([coordinatorId, volunteerId, eventId])
 }

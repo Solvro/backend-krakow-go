@@ -44,6 +44,11 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Event recommendations
+
+- `POST /coordinator/:id/recommendations` &mdash; coordinator recommends an event to one or more volunteers from their school (optionally adds a short message).
+- `GET /volunteer/:id/recommendations` &mdash; returns events recommended to the volunteer, including coordinator message and event details.
+
 ## Run tests
 
 ```bash

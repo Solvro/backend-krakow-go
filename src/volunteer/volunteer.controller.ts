@@ -1,3 +1,5 @@
+import { ResponseEventRecommendationDto } from "src/event-recommendation/dto/response-event-recommendation.dto";
+
 import {
   Body,
   Controller,
@@ -73,5 +75,16 @@ export class VolunteerController {
   })
   async remove(@Param("id") id: string) {
     return this.volunteerService.remove(id);
+  }
+
+  @Get(":id/recommendations")
+  @ApiOperation({ summary: "List event recommendations for volunteer" })
+  @ApiOkResponse({
+    description: "Array of event recommendations",
+    type: ResponseEventRecommendationDto,
+    isArray: true,
+  })
+  async listRecommendations(@Param("id") id: string) {
+    return this.volunteerService.getRecommendations(id);
   }
 }

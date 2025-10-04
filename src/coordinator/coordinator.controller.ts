@@ -1,3 +1,6 @@
+import { RecommendEventDto } from "src/event-recommendation/dto/recommend-event.dto";
+import { ResponseEventRecommendationDto } from "src/event-recommendation/dto/response-event-recommendation.dto";
+
 import {
   Body,
   Controller,
@@ -73,5 +76,22 @@ export class CoordinatorController {
   })
   async remove(@Param("id") id: string) {
     return this.coordinatorService.remove(id);
+  }
+
+  @Post(":id/recommendations")
+  @ApiOperation({ summary: "Recommend event to volunteers" })
+  @ApiCreatedResponse({
+    description: "Created or updated event recommendations",
+    type: ResponseEventRecommendationDto,
+    isArray: true,
+  })
+  async recommendEvent(
+    @Param("id") coordinatorId: string,
+    @Body() recommendEventDto: RecommendEventDto,
+  ) {
+    return this.coordinatorService.recommendEvent(
+      coordinatorId,
+      recommendEventDto,
+    );
   }
 }

@@ -255,7 +255,12 @@ async function main() {
   });
 
   // Coordinators
-  await prisma.coordinator.upsert({
+  const coordinators: Record<
+    string,
+    Awaited<ReturnType<typeof prisma.coordinator.upsert>>
+  > = {};
+
+  coordinators["coord-anna"] = await prisma.coordinator.upsert({
     where: { id: "coord-anna" },
     update: {
       name: "Anna Nowak",
@@ -270,7 +275,7 @@ async function main() {
     },
   });
 
-  await prisma.coordinator.upsert({
+  coordinators["coord-piotr"] = await prisma.coordinator.upsert({
     where: { id: "coord-piotr" },
     update: {
       name: "Piotr Malinowski",
@@ -285,7 +290,7 @@ async function main() {
     },
   });
 
-  await prisma.coordinator.upsert({
+  coordinators["coord-marta"] = await prisma.coordinator.upsert({
     where: { id: "coord-marta" },
     update: {
       name: "Marta Kowalczyk",
@@ -720,6 +725,47 @@ async function main() {
         eventId: t.eventId,
         volunteerId: t.volunteerId,
       },
+    });
+  }
+
+  // Event recommendations from coordinators to volunteers
+  const recommendationsData = [
+    {
+      id: "reco-anna-planty-ania",
+      coordinatorId: coordinators["coord-anna"].id,
+      volunteerId: volunteers["vol-ania"].id,
+      eventId: events["event-park-planty-tree"].id,
+      message: "Świetna okazja, by popracować przy zieleni w naszej okolicy.",
+    },
+    {
+      id: "reco-anna-youth-ola",
+      coordinatorId: coordinators["coord-anna"].id,
+      volunteerId: volunteers["vol-ola"].id,
+      eventId: events["event-youth-coding"].id,
+      message: "Twoje umiejętności programowania przydadzą się na warsztatach.",
+    },
+    {
+      id: "reco-piotr-tech-kuba",
+      coordinatorId: coordinators["coord-piotr"].id,
+      volunteerId: volunteers["vol-kuba"].id,
+      eventId: events["event-tech-meetup-krakow"].id,
+      message: "Networking technologiczny dla naszej klasy informatycznej.",
+    },
+  ];
+
+  for (const recommendation of recommendationsData) {
+    await prisma.eventRecommendation.upsert({
+      where: {
+        coordinatorId_volunteerId_eventId: {
+          coordinatorId: recommendation.coordinatorId,
+          volunteerId: recommendation.volunteerId,
+          eventId: recommendation.eventId,
+        },
+      },
+      update: {
+        message: recommendation.message,
+      },
+      create: recommendation,
     });
   }
 

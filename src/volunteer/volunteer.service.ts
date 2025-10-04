@@ -1,6 +1,8 @@
+import type { ResponseEventRecommendationDto } from "src/event-recommendation/dto/response-event-recommendation.dto";
+import { toEventRecommendationResponse } from "src/event-recommendation/event-recommendation.mapper";
 import { PrismaService } from "src/prisma/prisma.service";
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { CreateVolunteerDto } from "./dto/create-volunteer.dto";
 import { ResponseVolunteerDto } from "./dto/response-volunteer.dto";
@@ -48,5 +50,32 @@ export class VolunteerService {
       where: { id },
       include: { certificates: true },
     });
+  }
+
+  async getRecommendations(
+    id: string,
+  ): Promise<ResponseEventRecommendationDto[]> {
+    const volunteer = await this.prisma.volunteer.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (volunteer === null) {
+      throw new NotFoundException("Volunteer not found");
+    }
+
+    const recommendations = await this.prisma.eventRecommendation.findMany({
+      where: { volunteerId: id },
+      include: {
+        event: {
+          include: { chat: { select: { id: true } } },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return recommendations.map((recommendation) =>
+      toEventRecommendationResponse(recommendation),
+    );
   }
 }
