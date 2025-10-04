@@ -15,6 +15,7 @@ async function main() {
   await prisma.chatParticipant.deleteMany();
   await prisma.chat.deleteMany();
   await prisma.submission.deleteMany();
+  await prisma.attendanceCertificate.deleteMany();
   await prisma.task.deleteMany();
   await prisma.volunteer.deleteMany();
   await prisma.coordinator.deleteMany();
@@ -370,6 +371,7 @@ async function main() {
         name: v.name,
         birthdate: new Date(v.birthdate),
         schoolId: v.schoolId,
+        points: 0,
       },
       create: {
         id: v.id,
@@ -377,6 +379,7 @@ async function main() {
         email: v.email,
         birthdate: new Date(v.birthdate),
         schoolId: v.schoolId,
+        points: 0,
       },
     });
     volunteers[v.id] = created;
@@ -708,6 +711,57 @@ async function main() {
       },
     });
   }
+
+  // Attendance certificates and points for approved participations
+  const approvedSubmissions = submissionsData.filter(
+    (submission) => submission.status === SubmissionStatus.APPROVED,
+  );
+
+  const volunteerPoints: Record<string, number> = {};
+
+  for (const submissionSeed of approvedSubmissions) {
+    const volunteerId = volunteers[submissionSeed.vol].id;
+    const eventId = events[submissionSeed.event].id;
+
+    const tasksCount = await prisma.task.count({
+      where: {
+        volunteerId,
+        eventId,
+      },
+    });
+
+    const points = tasksCount;
+
+    await prisma.attendanceCertificate.upsert({
+      where: {
+        volunteerId_eventId: {
+          volunteerId,
+          eventId,
+        },
+      },
+      update: {
+        tasksCount,
+        points,
+      },
+      create: {
+        volunteerId,
+        eventId,
+        tasksCount,
+        points,
+      },
+    });
+
+    volunteerPoints[volunteerId] = (volunteerPoints[volunteerId] ?? 0) + points;
+  }
+
+  await Promise.all(
+    Object.entries(volunteerPoints).map(async ([volunteerId, points]) =>
+      prisma.volunteer.update({
+        where: { id: volunteerId },
+        data: { points },
+      }),
+    ),
+  );
 
   // Chats - event group chat and private chat samples
   const aiForGoodChat = await prisma.chat.upsert({

@@ -37,6 +37,8 @@ model Event {
 
   tasks Task[]
 
+  certificates AttendanceCertificate[]
+
   chat Chat?
 }
 
@@ -61,9 +63,12 @@ model Volunteer {
   school   School? @relation(fields: [schoolId], references: [id])
   schoolId String?
 
+  points Int @default(0)
+
   submissions Submission[]
   tasks       Task[]
   chatParticipants ChatParticipant[]
+  certificates AttendanceCertificate[]
 }
 
 model Submission {
@@ -171,4 +176,19 @@ model ChatMessage {
 enum ChatType {
   EVENT
   PRIVATE
+}
+
+model AttendanceCertificate {
+  id         String   @id @default(uuid())
+  issuedAt   DateTime @default(now())
+  tasksCount Int
+  points     Int
+
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id])
+  volunteerId String
+
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+
+  @@unique([volunteerId, eventId])
 }

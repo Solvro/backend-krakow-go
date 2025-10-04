@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+import { ResponseAttendanceCertificateDto } from "./response-attendance-certificate.dto";
+
 export class ResponseVolunteerDto {
   @ApiProperty({ description: "Volunteer identifier" })
   id: string;
@@ -20,6 +22,9 @@ export class ResponseVolunteerDto {
   @ApiProperty({ description: "Related school identifier", nullable: true })
   schoolId: string | null;
 
+  @ApiProperty({ description: "Accumulated volunteer points" })
+  points: number;
+
   @ApiProperty({
     type: String,
     format: "date-time",
@@ -33,4 +38,11 @@ export class ResponseVolunteerDto {
     description: "Last update timestamp",
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: "Attendance certificates issued for the volunteer",
+    type: ResponseAttendanceCertificateDto,
+    isArray: true,
+  })
+  certificates: ResponseAttendanceCertificateDto[];
 }

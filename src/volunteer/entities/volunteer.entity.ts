@@ -1,3 +1,5 @@
+import type { AttendanceCertificateEntity } from "./attendance-certificate.entity";
+
 export class VolunteerEntity {
   id: string;
   name: string;
@@ -6,4 +8,6 @@ export class VolunteerEntity {
   schoolId?: string | null;
   createdAt: Date;
   updatedAt: Date;
+  points: number;
+  certificates: AttendanceCertificateEntity[];
 }
