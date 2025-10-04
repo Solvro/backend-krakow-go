@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { ChatModule } from "./chat/chat.module";
 import { CoordinatorModule } from "./coordinator/coordinator.module";
 import { EventModule } from "./event/event.module";
 import { OrganizationModule } from "./organization/organization.module";
@@ -23,6 +24,7 @@ import { VolunteerModule } from "./volunteer/volunteer.module";
     SubmissionModule,
     TaskModule,
     CoordinatorModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -41,6 +41,9 @@ export class ResponseEventDto {
   @ApiProperty({ description: "Related organization identifier" })
   organizationId: string;
 
+  @ApiProperty({ description: "Chat identifier", nullable: true })
+  chatId: string | null;
+
   @ApiProperty({
     type: String,
     format: "date-time",

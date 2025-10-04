@@ -1,4 +1,9 @@
-import { EventTopic, PrismaClient, SubmissionStatus } from "@prisma/client";
+import {
+  ChatType,
+  EventTopic,
+  PrismaClient,
+  SubmissionStatus,
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -6,6 +11,9 @@ async function main() {
   console.warn("Start seeding...");
 
   // Drop all data
+  await prisma.chatMessage.deleteMany();
+  await prisma.chatParticipant.deleteMany();
+  await prisma.chat.deleteMany();
   await prisma.submission.deleteMany();
   await prisma.task.deleteMany();
   await prisma.volunteer.deleteMany();
@@ -700,6 +708,141 @@ async function main() {
       },
     });
   }
+
+  // Chats - event group chat and private chat samples
+  const aiForGoodChat = await prisma.chat.upsert({
+    where: { id: "chat-event-ai-for-good" },
+    update: {},
+    create: {
+      id: "chat-event-ai-for-good",
+      type: ChatType.EVENT,
+      eventId: events["event-ai-for-good"].id,
+    },
+  });
+
+  const aiOrgParticipant = await prisma.chatParticipant.upsert({
+    where: { id: "chat-participant-ai-org-hackyeah" },
+    update: {},
+    create: {
+      id: "chat-participant-ai-org-hackyeah",
+      chatId: aiForGoodChat.id,
+      organizationId: orgHackyeah.id,
+    },
+  });
+
+  const aiVolunteerAniaParticipant = await prisma.chatParticipant.upsert({
+    where: { id: "chat-participant-ai-vol-ania" },
+    update: {},
+    create: {
+      id: "chat-participant-ai-vol-ania",
+      chatId: aiForGoodChat.id,
+      volunteerId: volunteers["vol-ania"].id,
+    },
+  });
+
+  const aiVolunteerKubaParticipant = await prisma.chatParticipant.upsert({
+    where: { id: "chat-participant-ai-vol-kuba" },
+    update: {},
+    create: {
+      id: "chat-participant-ai-vol-kuba",
+      chatId: aiForGoodChat.id,
+      volunteerId: volunteers["vol-kuba"].id,
+    },
+  });
+
+  await prisma.chatMessage.upsert({
+    where: { id: "chat-message-ai-1" },
+    update: {
+      content: "Cześć wszystkim! Przypominam o odprawie w piątek o 20:00.",
+    },
+    create: {
+      id: "chat-message-ai-1",
+      chatId: aiForGoodChat.id,
+      senderId: aiOrgParticipant.id,
+      content: "Cześć wszystkim! Przypominam o odprawie w piątek o 20:00.",
+    },
+  });
+
+  await prisma.chatMessage.upsert({
+    where: { id: "chat-message-ai-2" },
+    update: {
+      content: "Będę! Czy ktoś potrzebuje transportu ze szkoły?",
+    },
+    create: {
+      id: "chat-message-ai-2",
+      chatId: aiForGoodChat.id,
+      senderId: aiVolunteerAniaParticipant.id,
+      content: "Będę! Czy ktoś potrzebuje transportu ze szkoły?",
+    },
+  });
+
+  await prisma.chatMessage.upsert({
+    where: { id: "chat-message-ai-3" },
+    update: {
+      content: "Ja chętnie skorzystam, dziękuję!",
+    },
+    create: {
+      id: "chat-message-ai-3",
+      chatId: aiForGoodChat.id,
+      senderId: aiVolunteerKubaParticipant.id,
+      content: "Ja chętnie skorzystam, dziękuję!",
+    },
+  });
+
+  const privateHackyeahAniaChat = await prisma.chat.upsert({
+    where: { id: "chat-private-hackyeah-ania" },
+    update: {},
+    create: {
+      id: "chat-private-hackyeah-ania",
+      type: ChatType.PRIVATE,
+    },
+  });
+
+  const privateOrgParticipant = await prisma.chatParticipant.upsert({
+    where: { id: "chat-participant-private-org-hackyeah" },
+    update: {},
+    create: {
+      id: "chat-participant-private-org-hackyeah",
+      chatId: privateHackyeahAniaChat.id,
+      organizationId: orgHackyeah.id,
+    },
+  });
+
+  const privateVolunteerParticipant = await prisma.chatParticipant.upsert({
+    where: { id: "chat-participant-private-vol-ania" },
+    update: {},
+    create: {
+      id: "chat-participant-private-vol-ania",
+      chatId: privateHackyeahAniaChat.id,
+      volunteerId: volunteers["vol-ania"].id,
+    },
+  });
+
+  await prisma.chatMessage.upsert({
+    where: { id: "chat-message-private-1" },
+    update: {
+      content:
+        "Cześć Agnieszka! Potrzebujemy potwierdzenia dostępności na mentoring sobotni.",
+    },
+    create: {
+      id: "chat-message-private-1",
+      chatId: privateHackyeahAniaChat.id,
+      senderId: privateOrgParticipant.id,
+      content:
+        "Cześć Agnieszka! Potrzebujemy potwierdzenia dostępności na mentoring sobotni.",
+    },
+  });
+
+  await prisma.chatMessage.upsert({
+    where: { id: "chat-message-private-2" },
+    update: { content: "Jasne, będę od 9:00 do 14:00." },
+    create: {
+      id: "chat-message-private-2",
+      chatId: privateHackyeahAniaChat.id,
+      senderId: privateVolunteerParticipant.id,
+      content: "Jasne, będę od 9:00 do 14:00.",
+    },
+  });
 
   console.warn("Seeding finished.");
 }
