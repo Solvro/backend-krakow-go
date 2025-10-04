@@ -391,6 +391,7 @@ async function main() {
       id: "sub-1",
       vol: "vol-ania",
       event: "event-park-planty-tree",
+      // make approved so vol-ania receives a second certificate for this event (1 point)
       status: SubmissionStatus.APPROVED,
     },
     {
@@ -447,13 +448,23 @@ async function main() {
       id: "sub-10",
       vol: "vol-ania",
       event: "event-tech-meetup-krakow",
-      status: SubmissionStatus.APPROVED,
+      // make not approved so only one approved submission exists for vol-ania
+      status: SubmissionStatus.PENDING,
     },
     {
       id: "sub-11",
       vol: "vol-ania",
       event: "event-hackyeah-orientation",
       status: SubmissionStatus.REJECTED,
+    },
+    // New approved submission for vol-ania on the AI event - this will be the single
+    // attendance certificate created for her and we'll ensure there are exactly 3
+    // tasks for this volunteer & event below.
+    {
+      id: "sub-12",
+      vol: "vol-ania",
+      event: "event-ai-for-good",
+      status: SubmissionStatus.APPROVED,
     },
   ];
 
@@ -567,7 +578,7 @@ async function main() {
       endDate: new Date("2025-10-11T09:00:00.000Z"),
       isCompleted: false,
       eventId: events["event-ai-for-good"].id,
-      volunteerId: volunteers["vol-ania"].id,
+      volunteerId: volunteers["vol-kuba"].id,
     },
     {
       id: "task-hack-reception",
